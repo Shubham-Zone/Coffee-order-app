@@ -4,7 +4,6 @@ import Swal from 'sweetalert2';
 
 function App() {
     useEffect(() => {
-        console.log("Navigator", navigator);
         if ("serviceWorker" in navigator) {
             navigator.serviceWorker.register("/sw.js", { scope: '/' }).then((registration) => {
                 console.log("Service Worker registered with scope:", registration.scope);
@@ -14,29 +13,47 @@ function App() {
 
     const subscribeToNotifications = async () => {
         console.log("Subscribe button clicked");
+
         try {
-            console.log("Registering service workers..");
+            // ✅ Request permission only when user clicks the button
+            const permission = await Notification.requestPermission();
+            if (permission !== "granted") {
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Notifications permission denied. Please enable notifications in your browser settings."
+                });
+                return;
+            }
+
+            console.log("Registering service worker...");
             const registration = await navigator.serviceWorker.ready;
+
+            console.log("Subscribing to push notifications...");
             const subscription = await registration.pushManager.subscribe({
                 userVisibleOnly: true,
                 applicationServerKey: "BJqfij3FNYMvfxe-rKen3r2fd7Jmlq9QXQmpCOoOzMIdPlb3JK1zrRA7Z7fLFFDXSDUp01NoceY8-YKX2DGiaj0"
             });
-            console.log("Subscription details", subscription);
+
+            console.log("Subscription details:", subscription);
+
             await axios.post(`${import.meta.env.VITE_BASE_URL}/subscribe`, subscription);
+
             Swal.fire({
                 title: "Good job!",
                 text: "Subscribed for notifications!",
                 icon: "success"
             });
+
         } catch (e) {
             Swal.fire({
                 icon: "error",
                 title: "Oops...",
-                text: e.response.data.msg || 'Something went wrong',
-                footer: '<a href="#">Why do I have this issue?</a>'
+                text: e.response?.data?.msg || 'Something went wrong',
             });
         }
     };
+
 
     return (
         <div style={{
