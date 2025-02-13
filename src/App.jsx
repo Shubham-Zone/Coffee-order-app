@@ -5,7 +5,11 @@ import Swal from 'sweetalert2';
 function App() {
     useEffect(() => {
         if ("serviceWorker" in navigator) {
-            navigator.serviceWorker.register("/sw.js", { scope: '/' }).then((registration) => {
+            navigator.serviceWorker.register("/sw.js", { 
+                scope: '/' ,
+                enabled: environment.production,
+                registrationStrategy: 'registerImmediately',
+            }).then((registration) => {
                 console.log("Service Worker registered with scope:", registration.scope);
             }).catch((error) => console.log("Service Worker registration failed:", error));
         }
