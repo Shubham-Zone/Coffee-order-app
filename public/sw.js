@@ -1,10 +1,5 @@
-self.addEventListener("install", (event) => {
-    event.waitUntil(
-        caches.open("coffee-order-cache").then((cache) => {
-            return cache.addAll(["/"]); // Cache homepage (update paths as needed)
-        })
-    );
-    self.skipWaiting();
+self.addEventListener('install', (event) => {
+    event.waitUntil(self.skipWaiting());
 });
 
 self.addEventListener("activate", (event) => {
