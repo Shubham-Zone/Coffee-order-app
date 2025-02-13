@@ -3,7 +3,15 @@ self.addEventListener('install', (event) => {
 });
 
 self.addEventListener('activate', (event) => {
-    console.log('Service Worker Activated');
+    event.waitUntil(
+        caches.keys().then((cacheNames) => {
+            return Promise.all(
+                cacheNames.map((cache) => {
+                    return caches.delete(cache);
+                })
+            );
+        })
+    );
 });
 
 self.addEventListener("push", (event) => {
