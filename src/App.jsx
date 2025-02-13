@@ -3,16 +3,27 @@ import axios from "axios";
 import Swal from 'sweetalert2';
 
 function App() {
-    useEffect(() => {
+    useEffect(async () => {
         if ("serviceWorker" in navigator) {
-            navigator.serviceWorker.register("/sw.js", { scope: "/" })
-                .then((registration) => {
-                    console.log("Service Worker registered with scope:", registration.scope);
-                })
-                .catch((error) => console.error("Service Worker registration failed:", error));
+            const registrations = await navigator.serviceWorker.getRegistrations();
+
+            const oldSw = registrations.find((registration) =>
+                registration.active?.scriptURL.includes('/login/sw.js'),
+            );
+
+            if (oldSw) {
+                oldSw.unregister();
+            }
+
+            navigator.serviceWorker.register('/sw.js');
+
+            // navigator.serviceWorker.register("/sw.js", { scope: "/" })
+            //     .then((registration) => {
+            //         console.log("Service Worker registered with scope:", registration.scope);
+            //     })
+            //     .catch((error) => console.error("Service Worker registration failed:", error));
         }
     }, []);
-
 
     const subscribeToNotifications = async () => {
         console.log("Subscribe button clicked");
@@ -56,7 +67,6 @@ function App() {
             });
         }
     };
-
 
     return (
         <div style={{
