@@ -13,7 +13,7 @@ self.addEventListener("notificationclick", (event) => {
     event.notification.close();
 
     if (action === "coffee" || action === "tea") {
-        fetch("http://localhost:5000/order", {
+        fetch(`${import.meta.env.VITE_BASE_URL}/order`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ user: "User1", choice: action })
