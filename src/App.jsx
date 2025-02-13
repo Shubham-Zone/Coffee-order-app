@@ -4,8 +4,10 @@ import Swal from 'sweetalert2';
 
 function App() {
     useEffect(async () => {
+        console.log("Registering service workers....");
         if ("serviceWorker" in navigator) {
             const registrations = await navigator.serviceWorker.getRegistrations();
+            console.log("registration", registrations);
 
             const oldSw = registrations.find((registration) =>
                 registration.active?.scriptURL.includes('/login/sw.js'),
