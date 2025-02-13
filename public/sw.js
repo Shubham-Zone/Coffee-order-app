@@ -1,12 +1,15 @@
 self.addEventListener('install', (event) => {
+    console.log("installing sw");
     event.waitUntil(self.skipWaiting());
 });
 
 self.addEventListener("activate", (event) => {
+    console.log("activate sw");
     event.waitUntil(self.clients.claim());
 });
 
 self.addEventListener("fetch", (event) => {
+    console.log("fetching sw");
     event.respondWith(
         caches.match(event.request).then((response) => {
             return response || fetch(event.request);
@@ -15,6 +18,7 @@ self.addEventListener("fetch", (event) => {
 });
 
 self.addEventListener("push", (event) => {
+    console.log("Pushing....");
     const data = event.data.json();
 
     self.registration.showNotification(data.title, {
