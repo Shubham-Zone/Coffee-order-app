@@ -3,20 +3,8 @@ import axios from "axios";
 import Swal from 'sweetalert2';
 
 function App() {
-    useEffect(async () => {
-        console.log("Registering service workers....");
+    useEffect(() => {
         if ("serviceWorker" in navigator) {
-            const registrations = await navigator.serviceWorker.getRegistrations();
-            console.log("registration", registrations);
-
-            const oldSw = registrations.find((registration) =>
-                registration.active?.scriptURL.includes('/login/sw.js'),
-            );
-
-            if (oldSw) {
-                oldSw.unregister();
-            }
-
             navigator.serviceWorker.register("/sw.js", { scope: "/" })
                 .then((registration) => {
                     console.log("Service Worker registered with scope:", registration.scope);
@@ -29,7 +17,7 @@ function App() {
         console.log("Subscribe button clicked");
 
         try {
-            // ✅ Request permission only when user clicks the button
+            // Request permission only when user clicks the button
             const permission = await Notification.requestPermission();
             if (permission !== "granted") {
                 Swal.fire({
