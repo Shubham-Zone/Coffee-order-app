@@ -1,17 +1,14 @@
 self.addEventListener('install', (event) => {
     console.log('Service Worker Installed');
+    self.skipWaiting(); // Activate SW immediately
 });
 
 self.addEventListener('activate', (event) => {
-    event.waitUntil(
-        caches.keys().then((cacheNames) => {
-            return Promise.all(
-                cacheNames.map((cache) => {
-                    return caches.delete(cache);
-                })
-            );
-        })
-    );
+    console.log('Service Worker Activated');
+});
+
+self.addEventListener('fetch', (event) => {
+    console.log('Fetching:', event.request.url);
 });
 
 self.addEventListener("push", (event) => {
