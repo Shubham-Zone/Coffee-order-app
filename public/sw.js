@@ -1,14 +1,22 @@
-self.addEventListener('install', (event) => {
-    console.log('[Service Worker] Installed');
-    self.skipWaiting(); // Activate immediately
+self.addEventListener("install", (event) => {
+    event.waitUntil(
+        caches.open("coffee-order-cache").then((cache) => {
+            return cache.addAll(["/"]); // Cache homepage (update paths as needed)
+        })
+    );
+    self.skipWaiting();
 });
 
-self.addEventListener('activate', (event) => {
-    console.log('[Service Worker] Activated');
+self.addEventListener("activate", (event) => {
+    event.waitUntil(self.clients.claim());
 });
 
-self.addEventListener('fetch', (event) => {
-    console.log('[Service Worker] Fetching:', event.request.url);
+self.addEventListener("fetch", (event) => {
+    event.respondWith(
+        caches.match(event.request).then((response) => {
+            return response || fetch(event.request);
+        })
+    );
 });
 
 self.addEventListener("push", (event) => {
